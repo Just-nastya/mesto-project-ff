@@ -52,17 +52,19 @@ const validationConfig = {
   errorClass: 'form__input-error_active'
 };
 
+enableValidation(validationConfig);  
+
 // Обработчик «отправки» формы редактирвоания профиля
 function handleFormProfileSubmit(evt) {
     evt.preventDefault(); // Отменяет стандартную отправку формы.
     const button = formEditProfile.querySelector('.popup__button');
     const name = nameInputProfile.value;
     const job = jobInputProfile.value;
-    profileTitle.textContent = name;
-    profileDescription.textContent = job;
     setSavingState(button);
     patchNameProfile(name, job)
     .then(result => {
+      profileTitle.textContent = name;
+      profileDescription.textContent = job;
       closeModal(modalEditProfile);
     })
     .catch(err => console.log(err))  
@@ -101,7 +103,6 @@ buttonEditProfile.addEventListener('click', function () {
   jobInputProfile.value = profileDescription.textContent;
   openModal(modalEditProfile);
   clearValidation(formEditProfile, validationConfig); 
-  enableValidation(validationConfig); 
 });
 
 // @todo: Открываем модальное окно для добавления карточки
@@ -110,7 +111,6 @@ buttonAddCard.addEventListener('click', function () {
   urlInputCard.value='';
   openModal(modalAddCard);
   clearValidation(formNewCard, validationConfig); 
-  enableValidation(validationConfig);
 });
 
 function setSavingState(button) {
@@ -119,6 +119,14 @@ function setSavingState(button) {
 
 function setInitialSaveState(button) {
     button.textContent = 'Сохранить';
+}
+
+function setSavingDeleteButton(button) {
+    button.textContent = 'Удаление...';
+}
+
+function setInitialDeleteButton(button) {
+    button.textContent = 'Да';
 }
 
 function refreshLikes(likeCountElement, responce) {
@@ -156,22 +164,28 @@ function openModalImage (cardTitle , cardImg) {
     openModal(modalTypeImage);
 };
 
+
+let card;
+let idCard;
+
 // @todo: Открываем модальное окно с подтверждением удаления
 function openModalDelete(cardItem, cardId) {
-    formDelete.addEventListener('submit',  function (evt) {
-      evt.preventDefault();
-      handleDeleteCardSubmit(cardItem, cardId);
-    });
+    card = cardItem;
+    idCard = cardId;
     openModal(modalDelete);
 };
+
+formDelete.addEventListener('submit',  function (evt) {
+  evt.preventDefault(); 
+  handleDeleteCardSubmit(card, idCard);
+});
 
 //нажимаем на редактирвоание аватара
 profileEditButton.addEventListener('click', () => {
     avatarInputProfile.value='';
     clearValidation(formAvatar, validationConfig);
-    enableValidation(validationConfig); 
     openModalAvatar();
-})
+});
 
 
 // @todo: Открываем модальное окно для смены автара
@@ -186,17 +200,17 @@ function openModalAvatar() {
 
 
 // @todo: Подтверждаем удаление
-function handleDeleteCardSubmit(cardItem, cardId) {
+function handleDeleteCardSubmit(card, idCard) {
   const button = formDelete.querySelector('.popup__button');
-  setSavingState(button);
-  deleteCard(cardId)
+  setSavingDeleteButton(button);
+  deleteCard(idCard)
   .then(result => {
-     removeCard(cardItem);      
-      closeModal(modalDelete);
+     removeCard(card);      
+     closeModal(modalDelete);
     })
    .catch(err => console.log(err))
    .finally(() => {
-     setInitialSaveState(button);
+     setInitialDeleteButton(button);
    });  
 };
 

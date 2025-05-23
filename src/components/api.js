@@ -19,16 +19,7 @@ export const getNameProfile = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers
   })
-    .then(res => {
-      if (res.ok) {
-        const resultUser = res.json();
-        return resultUser;
-      }
-       // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch(err => console.log(err))
-    .finally(res => {return res});
+  .then((res) => checkResponse(res))
 };
 
 //Загрузка карточек с сервера
@@ -36,17 +27,7 @@ export const getInitialCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers
   })
-    .then(res => {
-      if (res.ok) {
-        const resultCards = res.json();
-        return resultCards;
-      }
-
-       // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch(err => console.log(err))
-    .finally(res => {return res});
+  .then((res) => checkResponse(res))
 };
 
 //Редактирование профиля
@@ -72,7 +53,6 @@ export const postNewCard = (cardName, cardLink) => {
     })
   })
   .then((res) => checkResponse(res))
-  .catch(err => console.log(err))
 };
 
 //Удаление карточки
@@ -82,7 +62,6 @@ export const deleteCard = (cardId) => {
     headers: config.headers
   })
   .then((res) => checkResponse(res))
-  .catch(err => console.log(err))
 };
 
 //Добавление лайка карточки
@@ -92,7 +71,6 @@ export const addLikeCard = (cardId) => {
     headers: config.headers
   })
   .then((res) => checkResponse(res))
-  .catch(err => console.log(err))
 };
 
 //Добавление лайка карточки
@@ -102,7 +80,6 @@ export const deleteLikeCard = (cardId) => {
     headers: config.headers
   })
   .then((res) => checkResponse(res))
-  .catch(err => console.log(err))
 };
 
 //Редактирование аватара
@@ -115,5 +92,4 @@ export const editAvatar = (avatarUrl) => {
     })
   })
   .then((res) => checkResponse(res))
-  .catch(err => console.log(err))
 };
