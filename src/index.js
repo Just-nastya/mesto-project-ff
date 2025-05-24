@@ -184,19 +184,16 @@ formDelete.addEventListener('submit',  function (evt) {
 profileEditButton.addEventListener('click', () => {
     avatarInputProfile.value='';
     clearValidation(formAvatar, validationConfig);
-    openModalAvatar();
+    openModal(modalAvatar);
 });
 
+let avatarUrl;
 
-// @todo: Открываем модальное окно для смены автара
-function openModalAvatar() {
-    const avatarUrl = avatarInputProfile.value;
-    formAvatar.addEventListener('submit',  function (evt) {
+formAvatar.addEventListener('submit',  function (evt) {
       evt.preventDefault();
+      avatarUrl = avatarInputProfile.value;
       handleAvatarSubmit(avatarUrl);
-    });
-    openModal(modalAvatar);
-};
+});
 
 
 // @todo: Подтверждаем удаление
@@ -216,16 +213,16 @@ function handleDeleteCardSubmit(card, idCard) {
 
 // @todo: Подтверждаем cмену аватара
 function handleAvatarSubmit(avatarUrl) {
-  profileImage.style.backgroundImage = `url(${avatarUrl})`;
   const button = formAvatar.querySelector('.popup__button');
-  setSavingState(button);
+  setSavingState(button);  
   editAvatar(avatarUrl)
    .then(result => {
-       closeModal(modalAvatar);  
+      profileImage.style.backgroundImage = `url(${avatarUrl})`;
+      closeModal(modalAvatar);  
    })
    .catch(err => console.log(err))
    .finally(() => {
-     setInitialSaveState(button);
+      setInitialSaveState(button);
    });  
 };
 
@@ -247,7 +244,6 @@ Promise.all([getNameProfile(),getInitialCards()])
     profileTitle.textContent=resultUser.name;
     profileDescription.textContent=resultUser.about;
     profileImage.style.backgroundImage = `url(${resultUser.avatar})`;
-
 
     resultCards.forEach(element => {
      const cardElement = createCard(
